@@ -14,10 +14,23 @@ separators
 
 
 lookUp :: String -> [(String, a)] -> [a]
-lookUp = error "TODO: implement lookUp"
+lookUp a [] = []
+lookUp a ((x,y) : xys) 
+     |a == x = y : lookUp a xys
+     |otherwise = lookUp a xys
 
+toString :: Char -> String
+toString c = [c]
+	 
+	 
 split :: [Char] -> String -> (String, [String])
-split = error "TODO: implement split"
+split x [] = ("", [])
+split (seps) (y:ys)
+    | elem y (seps) =  (y : xs', ys') 
+	| otherwise = (xs', ((toString y ++ ys'))
+       where 
+        (xs', ys') = split (seps) (ys)	   
+ 
 
 combine :: String -> [String] -> [String]
 combine = error "TODO: implement combine"
