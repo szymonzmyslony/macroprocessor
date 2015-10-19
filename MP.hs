@@ -19,30 +19,38 @@ lookUp a ((x,y) : xys)
      |a == x = y : lookUp a xys
      |otherwise = lookUp a xys
 
-toString :: Char -> String
-toString c = [c]
-	 
-	 
 split :: [Char] -> String -> (String, [String])
-split x [] = ("", [])
+split x [] = ("", "":[])
 split (seps) (y:ys)
-    | elem y (seps) =  (y : xs', ys') 
-	| otherwise = (xs', ((toString y ++ ys'))
-       where 
-        (xs', ys') = split (seps) (ys)	   
- 
+    | elem y (seps) =  (y : xs', [] : ys') 
+    | otherwise = (xs', (y:y') : yss')
+        where 
+                (xs', ys') = split (seps) (ys)
+                y':yss' = ys'
+           			
 
 combine :: String -> [String] -> [String]
-combine = error "TODO: implement combine"
+combine [] y = y 
+combine x [] = x : []
+combine (x : xs) (y:ys) = y : [x] : combine (xs) (ys)
+    
+            
 
+	  
 getKeywordDefs :: [String] -> KeywordDefs
-getKeywordDefs = error "TODO: implement getKeywordDefs"
-
+getKeywordDefs [] = []
+getKeywordDefs (x : xs) =  (y, concat (combine seps ys))  : getKeywordDefs xs
+    where 
+    (s : seps, y : ys) = (split " " x)
+	
+	   
+	   
+	   
 expand :: FileContents -> FileContents -> FileContents
 expand = error "TODO: implement expand"
 
--- You may wish to uncomment and implement this helper function
--- when implementing expand
+
+
 -- replaceWord :: String -> KeywordDefs -> String
 
 
