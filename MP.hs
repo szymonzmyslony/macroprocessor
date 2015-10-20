@@ -28,8 +28,8 @@ split (seps) (y:ys)
     | elem y (seps) =  (y : xs', [] : ys') 
     | otherwise = (xs', (y:y') : yss')
         where 
-                (xs', ys') = split (seps) (ys)
-                y':yss' = ys'
+            (xs', ys') = split (seps) (ys)
+            y':yss' = ys'
            			
 
 combine :: String -> [String] -> [String]
@@ -47,20 +47,35 @@ getKeywordDefs (x : xs) =  (y, concat (combine seps ys))  : getKeywordDefs xs
     where 
     (a, (y:ys)) = (split " " x)
     seps = if a == [] then "" else tail a
-  --  (y:ys) = if b == [] then ('' : "") else (head b : tail b)
+ 
+ --  (y:ys) = if b == [] then ('' : "") else (head b : tail b)
 	   
 	   
 	   
 expand :: FileContents -> FileContents -> FileContents
 expand [] y = []
 expand x [] = x
-expand x y = concat (combine seps replaced)
+expand x y  = concat (combine seps replaced)
    where
      replaced = map (flip (replaceWord) keywords) splited   
      (seps, splited) = split separators x
-     (_, b) = split "\n" y
+     (_, b) = split ['\n'] y
      keywords = getKeywordDefs b 
-                                                                                                                                                                                                                                                                            
+   
+   
+expand' :: FileContents -> FileContents -> FileContents  
+expand' [] y = []
+expand' x [] = x
+expand' x y
+ | ("", []) == split ['#'] y = []
+ | otherwise = expand x e ++ "        ----      " ++  expand' x (concat ex)
+    where 
+      (_, (e:ex)) = (split ['#'] y)
+      
+
+
+
+
 
 
 replaceWord :: String -> KeywordDefs -> String
