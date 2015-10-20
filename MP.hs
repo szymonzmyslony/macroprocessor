@@ -13,11 +13,14 @@ separators
   = " \n\t.,:;!\"\'()<>/\\"
 
 
+--lookUp :: String -> [(String, a)] -> [a]
+--lookUp a [] = []
+--lookUp a ((x,y) : xys)
+  -- |a == x = y : lookUp a xys
+  --  |otherwise = lookUp a xys
+
 lookUp :: String -> [(String, a)] -> [a]
-lookUp a [] = []
-lookUp a ((x,y) : xys) 
-     |a == x = y : lookUp a xys
-     |otherwise = lookUp a xys
+lookUp a v = [y | (x,y) <- v, x == a]
 
 split :: [Char] -> String -> (String, [String])
 split x [] = ("", "":[])
@@ -39,20 +42,31 @@ combine (x : xs) (y:ys) = y : [x] : combine (xs) (ys)
 	  
 getKeywordDefs :: [String] -> KeywordDefs
 getKeywordDefs [] = []
+getKeywordDefs ("" : xs) = getKeywordDefs xs
 getKeywordDefs (x : xs) =  (y, concat (combine seps ys))  : getKeywordDefs xs
     where 
-    (s : seps, y : ys) = (split " " x)
-	
+    (a, (y:ys)) = (split " " x)
+    seps = if a == [] then "" else tail a
+  --  (y:ys) = if b == [] then ('' : "") else (head b : tail b)
 	   
 	   
 	   
 expand :: FileContents -> FileContents -> FileContents
-expand = error "TODO: implement expand"
+expand [] y = []
+expand x [] = x
+expand x y = concat (combine seps replaced)
+   where
+     replaced = map (flip (replaceWord) keywords) splited   
+     (seps, splited) = split separators x
+     (_, b) = split "\n" y
+     keywords = getKeywordDefs b 
+                                                                                                                                                                                                                                                                            
 
 
-
--- replaceWord :: String -> KeywordDefs -> String
-
+replaceWord :: String -> KeywordDefs -> String
+replaceWord "" x = ""
+replaceWord a@('$' : as) b = head (lookUp a b)
+replaceWord a b = a  
 
 
 main :: IO ()
