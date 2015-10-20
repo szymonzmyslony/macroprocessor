@@ -55,22 +55,19 @@ getKeywordDefs (x : xs) =  (y, concat (combine seps ys))  : getKeywordDefs xs
 expand :: FileContents -> FileContents -> FileContents
 expand [] y = []
 expand x [] = x
-expand x y  = concat (combine seps replaced)
+expand x y  = concat ((combine ([seps]) replaced) ++ ["---"]) 
    where
      replaced = map (flip (replaceWord) keywords) splited   
-     (seps, splited) = split separators x
+     (seps:s, splited) = split separators x
      (_, b) = split ['\n'] y
      keywords = getKeywordDefs b 
-   
-   
+                                                                                                                                                                                                                                                                            
 expand' :: FileContents -> FileContents -> FileContents  
 expand' [] y = []
 expand' x [] = x
-expand' x y
- | ("", []) == split ['#'] y = []
- | otherwise = expand x e ++ "        ----      " ++  expand' x (concat ex)
+expand' x y = concat (map ((flip expand x)) a)
     where 
-      (_, (e:ex)) = (split ['#'] y)
+      (_, a) = (split ['#'] y)
       
 
 
