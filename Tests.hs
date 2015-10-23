@@ -54,7 +54,7 @@ getKeywordDefsTestCases
     ]
 
 expandTestCases
-  = [ ("The capital of $1 is $2", "$1 Peru\n$2 Lima.")
+  = [ ("The capital of $1 is $2", "$1 Peru\n$2 Lima.\n#\n$1 Polska\n$2 Poznan.")
         ==> "The capital of Peru is Lima."
     , ("The time is $a", "$a now.")
         ==> "The time is now."
